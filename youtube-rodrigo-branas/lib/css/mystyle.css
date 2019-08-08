@@ -19,3 +19,7 @@
 .trBold {
     font-weight: bold;
 }
+
+.alert {
+    font-size: small;
+}
