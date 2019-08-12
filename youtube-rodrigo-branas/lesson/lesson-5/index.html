@@ -4,20 +4,22 @@
     <title>Lista Telefonica</title>
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link rel="stylesheet" type="text/css" href="../lib/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../lib/css/mystyle.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/css/mystyle.css">
 
     <!-- Angular -->
-    <script src="../lib/js/angular-1.7.8.min.js"></script>
-    <script src="../lib/js/angular-messages.js"></script>
+    <script src="../../lib/js/angular-1.7.8.min.js"></script>
+    <script src="../../lib/js/angular-messages.js"></script>
     <script type="text/javascript">
         let app = angular.module("listaTelefonica", ["ngMessages"]);
         app.controller("listaTelefonicaCtrl", function ($scope) {
             $scope.app = "Lista Telefonica";
             $scope.contatos = [
-                {nome: "Pedro", telefone: "(16) 99999-9991", cor:"black"},
-                {nome: "Maria", telefone: "(16) 99999-9992", cor:"red"},
-                {nome: "Lucas", telefone: "(16) 99999-9993", cor:"blue"},
+                {nome: "Pedro", telefone: "(16) 99999-9991", 
+                    operadora: {nome: "Oi", codigo: 14, categoria: "Celular"}, data: new Date()},
+                {nome: "Maria", telefone: "(16) 99999-9992", 
+                    operadora: {nome: "Vivo", codigo: 15, categoria: "Celular"}},
+                {nome: "Lucas", telefone: "(16) 99999-9993"},
             ];
             $scope.operadoras = [
                 {nome: "Oi", codigo: 14, categoria: "Celular"},
@@ -30,6 +32,7 @@
             $scope.addContato = function (contato) {
                 // Mantra 1: Não ler o $scope dentro do controller, apenas escrever
                 // Mantra 2: Utilizar os models para construir json.
+                contato.data = new Date();
                 $scope.contatos.push(angular.copy(contato));
                 delete $scope.contato;
                 $scope.contatoForm.$setPristine();
@@ -44,27 +47,34 @@
                     return contato.selecionado;
                 });
             };
+            $scope.criterioOrdenacao = 'nome';
+            $scope.ordernarPor = function (campo) {
+                $scope.criterioOrdenacao = campo;
+                $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+            };
         });
     </script>
 </head>
 <body ng-controller="listaTelefonicaCtrl">
     <div class="jumbotron">
         <h3 ng-bind="app"></h3> <!-- Outra forma de apresentar os valores, sem expressions {{}} -->
+        <input class="form-control" type="text" ng-model="criterioBusca" placeholder="O que procura?"><br>
         <table class="table" ng-show="contatos.length > 0">
             <tr>
                 <th></th>
-                <th>Nome</th>
+                <th><a href="" ng-click="ordernarPor('nome')">Nome</a></th>
                 <th>Telefone</th>
-                <th>Operadora</th>
-                <th></th>
+                <th><a href="" ng-click="ordernarPor('operadora')">Operadora</a></th>
+                <th>Aniversário</th>
             </tr>
-            <tr ng-class="{'trSelected trBold': contato.selecionado}" ng-repeat="contato in contatos">
+            <tr ng-class="{'trSelected trBold': contato.selecionado}" ng-repeat="contato in contatos | filter: {nome: criterioBusca} | orderBy:criterioOrdenacao:direcaoDaOrdenacao">
+                <!-- orderBy:'-nome', orderBy:'+nome' -->
                 <!-- ng-class="[array]" -->
                 <td><input type="checkbox" ng-model="contato.selecionado"></td>
-                <td>{{contato.nome}}</td>
+                <td>{{contato.nome | uppercase}}</td>
                 <td>{{contato.telefone}}</td>
-                <td>{{contato.operadora}}</td>
-                <td><div style="margin:0 auto; width: 20px; height: 20px;" ng-style="{'background': contato.cor}"></div></td>
+                <td>{{contato.operadora.nome | lowercase}}</td>
+                <td>{{contato.data | date:'dd/MM/yyyy'}}</td>
                 <!-- <td ng-repeat="(key,value) in contato">{{value}}</td> -->
             </tr>
         </table>
@@ -72,7 +82,7 @@
         <form name="contatoForm">
             <input class="form-control" type="text" ng-model="contato.nome" name="nome" ng-required="true" ng-minlength="8" placeholder="Nome">
             <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"placeholder="Telefone">
-            <select class="form-control" ng-model="contato.operadora" name="operadora" ng-options="op.nome as op.nome group by op.categoria for op in operadoras">
+            <select class="form-control" ng-model="contato.operadora" name="operadora" ng-options="op as op.nome group by op.categoria for op in operadoras | orderBy:'nome'">
                 <!-- ng-options="value as textContent for jsonName in arrayOfJson" -->
                 <!-- group by 'object' -->
                 <option>Selecione uma operadora</option>
