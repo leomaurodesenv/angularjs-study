@@ -10,7 +10,7 @@
 - [Lesson 3](lesson/lesson-3/): AngularJS #3 - Usando Diretivas - Parte 2 - Rodrigo Branas. [YouTube](https://youtu.be/VcF7SySRkHs).
 - [Lesson 4](lesson/lesson-4/): AngularJS #4 - Validando Formulários - Rodrigo Branas. [YouTube](https://youtu.be/HDjpIT2TLP0).
 - [Lesson 5](lesson/lesson-5/): AngularJS #5 - Aplicando Filtros - Rodrigo Branas. [YouTube](https://youtu.be/v3Avc87ZOlw).
-    https://youtu.be/v3Avc87ZOlw?t=1046
+    
     
 ---
 ## Also look ~
