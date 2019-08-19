@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html ng-app="listaTelefonica">
+<head>
+    <title>Lista Telefonica</title>
+    <meta charset="utf-8">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="../../lib/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/css/mystyle.css">
+
+    <!-- Angular -->
+    <script src="../../lib/js/angular-1.7.8.min.js"></script>
+    <script src="../../lib/js/angular-locale_pt-br.js"></script>
+    <script src="../../lib/js/angular-messages.js"></script>
+    <script type="text/javascript">
+        let app = angular.module("listaTelefonica", ["ngMessages"]);
+        app.controller("listaTelefonicaCtrl", function ($scope, $filter, $http) {
+            $scope.app = "Lista Telefonica";
+            $scope.contatos = [];
+            let carregaContatos = function () {
+                $http.get('./contatos.json').then(function (response) {
+                    $scope.contatos = response.data;
+                });
+            };
+            carregaContatos();
+
+            $scope.operadoras = [];
+            let carregaOperadoras = function () {
+                $http.get('./operadoras.json').then(function (response) {
+                    $scope.operadoras = response.data;
+                });
+            };
+            carregaOperadoras();
+
+            $scope.addContato = function (contato) {
+                // Mantra 1: Não ler o $scope dentro do controller, apenas escrever
+                // Mantra 2: Utilizar os models para construir json.
+                contato.data = new Date();
+                $scope.contatos.push(contato);
+                delete $scope.contato;
+                $scope.contatoForm.$setPristine();
+            };
+            $scope.delContato = function (contatos) {
+                $scope.contatos = contatos.filter(function (contato) {
+                    if (!contato.selecionado) return contato;
+                });
+            };
+            $scope.isContatoSelecionado = function (contatos) {
+                return contatos.some(function (contato) {
+                    return contato.selecionado;
+                });
+            };
+            $scope.criterioOrdenacao = 'nome';
+            $scope.ordernarPor = function (campo) {
+                $scope.criterioOrdenacao = campo;
+                $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+            };
+        });
+    </script>
+</head>
+<body ng-controller="listaTelefonicaCtrl">
+    <div class="jumbotron">
+        <h3 ng-bind="app"></h3> <!-- Outra forma de apresentar os valores, sem expressions {{}} -->
+        <input class="form-control" type="text" ng-model="criterioBusca" placeholder="O que procura?"><br>
+        <table class="table" ng-show="contatos.length > 0">
+            <tr>
+                <th></th>
+                <th><a href="" ng-click="ordernarPor('nome')">Nome</a></th>
+                <th>Telefone</th>
+                <th><a href="" ng-click="ordernarPor('operadora')">Operadora</a></th>
+            </tr>
+            <tr ng-class="{'trSelected trBold': contato.selecionado}" ng-repeat="contato in contatos | filter: {nome: criterioBusca} | orderBy:criterioOrdenacao:direcaoDaOrdenacao">
+                <!-- orderBy:'-nome', orderBy:'+nome' -->
+                <!-- ng-class="[array]" -->
+                <td><input type="checkbox" ng-model="contato.selecionado"></td>
+                <td>{{contato.nome | uppercase}}</td>
+                <td>{{contato.telefone}}</td>
+                <td>{{contato.operadora.nome | lowercase}}</td>
+                <!-- <td ng-repeat="(key,value) in contato">{{value}}</td> -->
+            </tr>
+        </table>
+        <hr>
+        <form name="contatoForm">
+            <input class="form-control" type="text" ng-model="contato.nome" name="nome" ng-required="true" ng-minlength="8" placeholder="Nome">
+            <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"placeholder="Telefone">
+            <select class="form-control" ng-model="contato.operadora" name="operadora" ng-options="op as op.nome group by op.categoria for op in operadoras | orderBy:'nome'">
+                <!-- ng-options="value as textContent for jsonName in arrayOfJson" -->
+                <!-- group by 'object' -->
+                <option>Selecione uma operadora</option>
+            </select>
+        </form>
+        <!-- (.$valid, .$invalid), (.$pristine, .$dirty) -->
+        <!-- ng-messages="" for multiples errors of a same content -->
+        <div ng-show="contatoForm.$error.required && contatoForm.$dirty" class="alert alert-danger">
+            <span class="font-weight-bold" ng-show="contatoForm.nome.$error.required">Nome,</span>
+            <span class="font-weight-bold" ng-show="contatoForm.telefone.$error.required">Telefone,</span>
+            <span class="font-weight-bold" ng-show="contatoForm.operadora.$invalid">Operadora,</span> não preenchido(s).
+        </div>
+        <div ng-show="contatoForm.nome.$error.minlength" class="alert alert-danger">
+            <span class="font-weight-bold">Nome</span>, mínimo 8 digítos no campo.
+        </div>
+        <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+            <span class="font-weight-bold">Telefone</span>, padrão do campo 9999-9999.
+        </div>
+        <button class="btn btn-primary btn-block" ng-click="addContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+        <button class="btn btn-danger btn-block" ng-click="delContato(contatos)" ng-if="isContatoSelecionado(contatos)">Apagar Contatos</button>
+    </div>
+    <div style="text-align: center;">
+        Criado por Leonardo Moraes (leo.mauro.desenv@gmail.com)
+    </div>
+</body>
+</html>

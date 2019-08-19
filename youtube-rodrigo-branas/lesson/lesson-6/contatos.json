@@ -1,0 +1,16 @@
+[
+    {
+        "nome": "Pedro", 
+        "telefone": "(16) 99999-9991", 
+        "operadora": {"nome": "Oi", "codigo": 14, "categoria": "Celular"}
+    },
+    {
+        "nome": "Maria", 
+        "telefone": "(16) 99999-9992", 
+        "operadora": {"nome": "Vivo", "codigo": 15, "categoria": "Celular"}
+    },
+    {
+        "nome": "Lucas", 
+        "telefone": "(16) 99999-9993"
+    }
+]
