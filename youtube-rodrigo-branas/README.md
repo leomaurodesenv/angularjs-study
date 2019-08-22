@@ -11,6 +11,7 @@
 - [Lesson 4](lesson/lesson-4/): AngularJS #4 - Validando Formulários - Rodrigo Branas. [YouTube](https://youtu.be/HDjpIT2TLP0).
 - [Lesson 5](lesson/lesson-5/): AngularJS #5 - Aplicando Filtros - Rodrigo Branas. [YouTube](https://youtu.be/v3Avc87ZOlw).
 - [Lesson 6](lesson/lesson-6/): AngularJS #6 - Integrando com o back-end por AJAX - Rodrigo Branas. [YouTube](https://youtu.be/VU38CEVwPck).
+- [Lesson 7](lesson/lesson-7/): AngularJS #7 - Organizando o projeto - Rodrigo Branas. [YouTube](https://youtu.be/Ma6VVQdvGq4).
     
 ---
 ## Also look ~

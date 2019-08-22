@@ -1,0 +1,25 @@
+.jumbotron {
+    width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    }
+
+.jumbotron>h3 {
+    margin-bottom: 40px;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+.trSelected {
+    background: #ffcc00;
+}
+
+.trBold {
+    font-weight: bold;
+}
+
+.alert {
+    font-size: small;
+}
